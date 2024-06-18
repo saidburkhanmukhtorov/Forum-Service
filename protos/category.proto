@@ -1,0 +1,78 @@
+syntax = "proto3";
+
+option go_package = "/category";
+
+package forum;
+
+// Category message definition
+message Category {
+    string id = 1;  // UUID
+    string name = 2;
+    string created_at = 3;
+    string updated_at = 4;
+    string deleted_at = 5;
+}
+
+// Request for creating a new category
+message CreateCategoryRequest {
+    string name = 1;
+}
+
+// Response after creating a new category
+message CreateCategoryResponse {
+    Category category = 1;
+}
+
+// Request for retrieving a category by ID
+message GetCategoryRequest {
+    string id = 1;
+}
+
+// Response after retrieving a category by ID
+message GetCategoryResponse {
+    Category category = 1;
+}
+
+// Request for updating an existing category
+message UpdateCategoryRequest {
+    string id = 1;
+    string name = 2;
+}
+
+// Response after updating a category
+message UpdateCategoryResponse {
+    Category category = 1;
+}
+
+// Request for deleting a category by ID
+message DeleteCategoryRequest {
+    string id = 1;
+}
+
+// Response after deleting a category
+message DeleteCategoryResponse {
+    string message = 1;
+}
+
+// Request for getting all categories
+message GetAllCategoriesRequest {
+    // Pagination
+    int32 page = 1;
+    int32 limit = 2;
+}
+
+// Response containing a list of categories
+message GetAllCategoriesResponse {
+    repeated Category categories = 1;
+}
+
+service CategoryService {
+    // Category CRUD
+    rpc CreateCategory (CreateCategoryRequest) returns (CreateCategoryResponse);
+    rpc GetCategory (GetCategoryRequest) returns (GetCategoryResponse);
+    rpc UpdateCategory (UpdateCategoryRequest) returns (UpdateCategoryResponse);
+    rpc DeleteCategory (DeleteCategoryRequest) returns (DeleteCategoryResponse);
+
+    // Category GetAll
+    rpc GetAllCategories (GetAllCategoriesRequest) returns (GetAllCategoriesResponse);
+}

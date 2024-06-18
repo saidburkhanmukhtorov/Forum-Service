@@ -1,0 +1,78 @@
+syntax = "proto3";
+
+option go_package = "/tag";
+
+package forum;
+
+// Tag message definition
+message Tag {
+    string id = 1;  // UUID
+    string name = 2;
+    string created_at = 3;
+    string updated_at = 4;
+    string deleted_at = 5;
+}
+
+// Request for creating a new tag
+message CreateTagRequest {
+    string name = 1;
+}
+
+// Response after creating a new tag
+message CreateTagResponse {
+    Tag tag = 1;
+}
+
+// Request for retrieving a tag by ID
+message GetTagRequest {
+    string id = 1;
+}
+
+// Response after retrieving a tag by ID
+message GetTagResponse {
+    Tag tag = 1;
+}
+
+// Request for updating an existing tag
+message UpdateTagRequest {
+    string id = 1;
+    string name = 2;
+}
+
+// Response after updating a tag
+message UpdateTagResponse {
+    Tag tag = 1;
+}
+
+// Request for deleting a tag by ID
+message DeleteTagRequest {
+    string id = 1;
+}
+
+// Response after deleting a tag
+message DeleteTagResponse {
+    string message = 1;
+}
+
+// Request for getting all tags
+message GetAllTagsRequest {
+    // Pagination
+    int32 page = 1;
+    int32 limit = 2;
+}
+
+// Response containing a list of tags
+message GetAllTagsResponse {
+    repeated Tag tags = 1;
+}
+
+service TagService {
+    // Tag CRUD
+    rpc CreateTag (CreateTagRequest) returns (CreateTagResponse);
+    rpc GetTag (GetTagRequest) returns (GetTagResponse);
+    rpc UpdateTag (UpdateTagRequest) returns (UpdateTagResponse);
+    rpc DeleteTag (DeleteTagRequest) returns (DeleteTagResponse);
+
+    // Tag GetAll
+    rpc GetAllTags (GetAllTagsRequest) returns (GetAllTagsResponse);
+}

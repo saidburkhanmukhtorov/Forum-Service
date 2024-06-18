@@ -1,0 +1,92 @@
+syntax = "proto3";
+
+option go_package = "/post";
+
+package forum;
+
+// Post message definition
+message Post {
+    string id = 1; // UUID
+    string user_id = 2; // UUID
+    string title = 3;
+    string body = 4;
+    string category_id = 5; // UUID
+    string created_at = 6;
+    string updated_at = 7;
+    string deleted_at = 8;
+}
+
+// Request for creating a new post
+message CreatePostRequest {
+    string user_id = 1;
+    string title = 2;
+    string body = 3;
+    string category_id = 4;
+}
+
+// Response after creating a new post
+message CreatePostResponse {
+    Post post = 1;
+}
+
+// Request for retrieving a post by ID
+message GetPostRequest {
+    string id = 1;
+}
+
+// Response after retrieving a post by ID
+message GetPostResponse {
+    Post post = 1;
+}
+
+// Request for updating an existing post
+message UpdatePostRequest {
+    string id = 1;
+    string title = 2;
+    string body = 3;
+    string category_id = 4;
+}
+
+// Response after updating a post
+message UpdatePostResponse {
+    Post post = 1;
+}
+
+// Request for deleting a post by ID
+message DeletePostRequest {
+    string id = 1;
+}
+
+// Response after deleting a post
+message DeletePostResponse {
+    string message = 1;
+}
+
+// Request for getting all posts
+message GetAllPostsRequest {
+    // Optional filters
+    string user_id = 1; 
+    string title = 2;
+    string category_id = 3;
+    string body = 4;
+
+    // Pagination
+    int32 page = 5; // Default to 1
+    int32 limit = 6; // Default to 10
+}
+
+// Response containing a list of posts
+message GetAllPostsResponse {
+    repeated Post posts = 1;
+}
+
+service PostService {
+    // Post CRUD
+    rpc CreatePost (CreatePostRequest) returns (CreatePostResponse);
+    rpc GetPost (GetPostRequest) returns (GetPostResponse);
+    rpc UpdatePost (UpdatePostRequest) returns (UpdatePostResponse);
+    rpc DeletePost (DeletePostRequest) returns (DeletePostResponse);
+
+    // Post GetAll 
+    rpc GetAllPosts (GetAllPostsRequest) returns (GetAllPostsResponse);
+}
