@@ -1,0 +1,74 @@
+syntax = "proto3";
+
+option go_package = "/posttag";
+import "protos/posts.proto";
+
+package forum;
+
+// PostTag message definition (Represents the relationship between posts and tags)
+message PostTag {
+    string post_id = 1; // UUID
+    string tag_id = 2; // UUID
+    string created_at = 3;
+}
+
+// Request for creating a new post-tag relationship
+message CreatePostTagRequest {
+    string post_id = 1;
+    string tag_id = 2;
+}
+
+// Response after creating a new post-tag relationship
+message CreatePostTagResponse {
+    PostTag post_tag = 1;
+}
+
+// Request for deleting a post-tag relationship
+message DeletePostTagRequest {
+    string post_id = 1;
+    string tag_id = 2;
+}
+
+// Response after deleting a post-tag relationship
+message DeletePostTagResponse {
+    string message = 1;
+}
+
+// Request for getting all post-tag relationships
+message GetAllPostTagsRequest {
+    // Optional filters
+    string post_id = 1;
+    string tag_id = 2;
+
+    // Pagination
+    int32 page = 3;
+    int32 limit = 4;
+}
+
+// Response containing a list of post-tag relationships
+message GetAllPostTagsResponse {
+    repeated PostTag post_tags = 1;
+}
+
+message GetPostsByTagRequest {
+    string tag_id = 1; // UUID of the tag
+    // Pagination
+    int32 page = 2; // Default to 1
+    int32 limit = 3; // Default to 10 
+}
+
+message GetPostsByTagResponse {
+    repeated Post posts = 1; // Array of post 
+}
+
+service PostTagService {
+    // PostTag CRUD
+    rpc CreatePostTag (CreatePostTagRequest) returns (CreatePostTagResponse);
+    rpc DeletePostTag (DeletePostTagRequest) returns (DeletePostTagResponse);
+
+    // Get posts associated with a tag
+    rpc GetPostsByTag(GetPostsByTagRequest) returns (GetPostsByTagResponse); 
+
+    // PostTag GetAll
+    rpc GetAllPostTags (GetAllPostTagsRequest) returns (GetAllPostTagsResponse);
+}
