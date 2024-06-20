@@ -35,6 +35,7 @@ type TagRepo interface {
 	Update(ctx context.Context, req *tag.UpdateTagRequest) (*tag.UpdateTagResponse, error)
 	Delete(ctx context.Context, req *tag.DeleteTagRequest) (*tag.DeleteTagResponse, error)
 	GetAllTags(ctx context.Context, req *tag.GetAllTagsRequest) (*tag.GetAllTagsResponse, error)
+	GetFamousTags(ctx context.Context, req *tag.GetFamousTagsReq) (*tag.GetFamousTagsRes, error)
 }
 
 // PostRepo defines methods for managing posts.

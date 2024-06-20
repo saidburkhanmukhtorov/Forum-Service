@@ -19,11 +19,12 @@ import (
 const _ = grpc.SupportPackageIsVersion8
 
 const (
-	TagService_CreateTag_FullMethodName  = "/forum.TagService/CreateTag"
-	TagService_GetTag_FullMethodName     = "/forum.TagService/GetTag"
-	TagService_UpdateTag_FullMethodName  = "/forum.TagService/UpdateTag"
-	TagService_DeleteTag_FullMethodName  = "/forum.TagService/DeleteTag"
-	TagService_GetAllTags_FullMethodName = "/forum.TagService/GetAllTags"
+	TagService_CreateTag_FullMethodName     = "/forum.TagService/CreateTag"
+	TagService_GetTag_FullMethodName        = "/forum.TagService/GetTag"
+	TagService_UpdateTag_FullMethodName     = "/forum.TagService/UpdateTag"
+	TagService_DeleteTag_FullMethodName     = "/forum.TagService/DeleteTag"
+	TagService_GetAllTags_FullMethodName    = "/forum.TagService/GetAllTags"
+	TagService_GetFamousTags_FullMethodName = "/forum.TagService/GetFamousTags"
 )
 
 // TagServiceClient is the client API for TagService service.
@@ -37,6 +38,7 @@ type TagServiceClient interface {
 	DeleteTag(ctx context.Context, in *DeleteTagRequest, opts ...grpc.CallOption) (*DeleteTagResponse, error)
 	// Tag GetAll
 	GetAllTags(ctx context.Context, in *GetAllTagsRequest, opts ...grpc.CallOption) (*GetAllTagsResponse, error)
+	GetFamousTags(ctx context.Context, in *GetFamousTagsReq, opts ...grpc.CallOption) (*GetFamousTagsRes, error)
 }
 
 type tagServiceClient struct {
@@ -97,6 +99,16 @@ func (c *tagServiceClient) GetAllTags(ctx context.Context, in *GetAllTagsRequest
 	return out, nil
 }
 
+func (c *tagServiceClient) GetFamousTags(ctx context.Context, in *GetFamousTagsReq, opts ...grpc.CallOption) (*GetFamousTagsRes, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(GetFamousTagsRes)
+	err := c.cc.Invoke(ctx, TagService_GetFamousTags_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // TagServiceServer is the server API for TagService service.
 // All implementations must embed UnimplementedTagServiceServer
 // for forward compatibility
@@ -108,6 +120,7 @@ type TagServiceServer interface {
 	DeleteTag(context.Context, *DeleteTagRequest) (*DeleteTagResponse, error)
 	// Tag GetAll
 	GetAllTags(context.Context, *GetAllTagsRequest) (*GetAllTagsResponse, error)
+	GetFamousTags(context.Context, *GetFamousTagsReq) (*GetFamousTagsRes, error)
 	mustEmbedUnimplementedTagServiceServer()
 }
 
@@ -129,6 +142,9 @@ func (UnimplementedTagServiceServer) DeleteTag(context.Context, *DeleteTagReques
 }
 func (UnimplementedTagServiceServer) GetAllTags(context.Context, *GetAllTagsRequest) (*GetAllTagsResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetAllTags not implemented")
+}
+func (UnimplementedTagServiceServer) GetFamousTags(context.Context, *GetFamousTagsReq) (*GetFamousTagsRes, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetFamousTags not implemented")
 }
 func (UnimplementedTagServiceServer) mustEmbedUnimplementedTagServiceServer() {}
 
@@ -233,6 +249,24 @@ func _TagService_GetAllTags_Handler(srv interface{}, ctx context.Context, dec fu
 	return interceptor(ctx, in, info, handler)
 }
 
+func _TagService_GetFamousTags_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(GetFamousTagsReq)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(TagServiceServer).GetFamousTags(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: TagService_GetFamousTags_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(TagServiceServer).GetFamousTags(ctx, req.(*GetFamousTagsReq))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // TagService_ServiceDesc is the grpc.ServiceDesc for TagService service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -259,6 +293,10 @@ var TagService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "GetAllTags",
 			Handler:    _TagService_GetAllTags_Handler,
+		},
+		{
+			MethodName: "GetFamousTags",
+			Handler:    _TagService_GetFamousTags_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

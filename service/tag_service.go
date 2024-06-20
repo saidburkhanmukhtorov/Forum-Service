@@ -34,7 +34,6 @@ func (s *TagService) CreateTag(ctx context.Context, req *tag.CreateTagRequest) (
 // GetTagById gets a tag by its ID.
 func (s *TagService) GetTag(ctx context.Context, req *tag.GetTagRequest) (*tag.GetTagResponse, error) {
 	log.Info().Msg("TagService: GetTagById called")
-
 	resp, err := s.stg.Tag().GetById(ctx, req)
 	if err != nil {
 		log.Error().Err(err).Msg("TagService: Error getting tag by ID")
@@ -74,6 +73,18 @@ func (s *TagService) GetAllTags(ctx context.Context, req *tag.GetAllTagsRequest)
 	resp, err := s.stg.Tag().GetAllTags(ctx, req)
 	if err != nil {
 		log.Error().Err(err).Msg("TagService: Error getting all tags")
+		return nil, err
+	}
+	return resp, nil
+}
+
+// GetFamousTags gets famous tags with optional pagination and sorting.
+func (s *TagService) GetFamousTags(ctx context.Context, req *tag.GetFamousTagsReq) (*tag.GetFamousTagsRes, error) {
+	log.Info().Msg("TagService: GetFamousTags called")
+
+	resp, err := s.stg.Tag().GetFamousTags(ctx, req)
+	if err != nil {
+		log.Error().Err(err).Msg("TagService: Error getting famous tags")
 		return nil, err
 	}
 	return resp, nil

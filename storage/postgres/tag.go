@@ -196,6 +196,10 @@ func (tDb *TagDb) GetAllTags(ctx context.Context, req *tag.GetAllTagsRequest) (*
 		WHERE 
 			deleted_at = 0
 	`
+	if req.Name != "" {
+		query += " AND name ILIKE $1 "
+		args = append(args, "%"+req.Name+"%")
+	}
 
 	// Apply pagination
 	if req.Limit <= 0 {
@@ -243,4 +247,66 @@ func (tDb *TagDb) GetAllTags(ctx context.Context, req *tag.GetAllTagsRequest) (*
 	}
 
 	return &tag.GetAllTagsResponse{Tags: tags}, nil
+}
+
+// GetFamousTags retrieves a list of famous tags with optional pagination and sorting.
+func (tDb *TagDb) GetFamousTags(ctx context.Context, req *tag.GetFamousTagsReq) (*tag.GetFamousTagsRes, error) {
+	var args []interface{}
+	query := `
+		SELECT name, count(name)
+		FROM tags
+		WHERE deleted_at = 0
+	`
+	if req.Name != "" {
+		query += " AND name ILIKE $1 "
+		args = append(args, "%"+req.Name+"%")
+	}
+
+	// Apply sorting
+	if req.Desc {
+		query += " GROUP BY name ORDER BY count(name) DESC"
+	} else {
+		query += " GROUP BY name ORDER BY count(name) ASC"
+	}
+	// Apply pagination
+	if req.Limit <= 0 {
+		req.Limit = 10 // Default limit
+	}
+	if req.Page <= 0 {
+		req.Page = 1 // Default page
+	}
+	offset := (req.Page - 1) * req.Limit
+	query += fmt.Sprintf(" OFFSET %d LIMIT %d", offset, req.Limit)
+
+	rows, err := tDb.Db.Query(ctx, query, args...)
+	if err != nil {
+		log.Error().Err(err).Msg("Error getting famous tags")
+		return nil, err
+	}
+	defer rows.Close()
+
+	var famousTags []*tag.FamousTag
+	for rows.Next() {
+		var (
+			name  string
+			count int32
+		)
+		err := rows.Scan(
+			&name,
+			&count,
+		)
+		if err != nil {
+			log.Error().Err(err).Msg("Error scanning famous tag row")
+			return nil, err
+		}
+
+		famousTags = append(famousTags, &tag.FamousTag{Name: name, Count: count})
+	}
+
+	if err = rows.Err(); err != nil {
+		log.Error().Err(err).Msg("Error iterating over famous tag rows")
+		return nil, err
+	}
+
+	return &tag.GetFamousTagsRes{Tags: famousTags}, nil
 }

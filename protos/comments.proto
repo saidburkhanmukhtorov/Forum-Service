@@ -63,7 +63,7 @@ message GetAllCommentsRequest {
     // Optional filters
     string post_id = 1;
     string user_id = 2;
-    
+ 
     // Pagination
     int32 page = 3;
     int32 limit = 4;

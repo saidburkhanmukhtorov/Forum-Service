@@ -12,8 +12,6 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-// ... other test setup functions ...
-
 func newTestCategory(t *testing.T) *postgres.CategoryDb {
 	cfg := config.Load()
 	connString := fmt.Sprintf("postgresql://%s:%s@%s:%d/%s",
