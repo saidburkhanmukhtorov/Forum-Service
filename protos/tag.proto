@@ -56,10 +56,16 @@ message DeleteTagResponse {
 
 // Request for getting all tags
 message GetAllTagsRequest {
+<<<<<<< HEAD
     string name = 1;
     // Pagination
     int32 page = 2;
     int32 limit = 3;
+=======
+    // Pagination
+    int32 page = 1;
+    int32 limit = 2;
+>>>>>>> 9ae723d5f26a638be0bb2c556bd61ccaf6ef2ae6
 }
 
 // Response containing a list of tags
@@ -67,6 +73,7 @@ message GetAllTagsResponse {
     repeated Tag tags = 1;
 }
 
+<<<<<<< HEAD
 message GetFamousTagsReq {
     string name = 1;
     bool desc = 2;
@@ -81,6 +88,8 @@ message FamousTag{
     string name = 1;
     int32 count = 2;
 }
+=======
+>>>>>>> 9ae723d5f26a638be0bb2c556bd61ccaf6ef2ae6
 service TagService {
     // Tag CRUD
     rpc CreateTag (CreateTagRequest) returns (CreateTagResponse);
@@ -90,5 +99,8 @@ service TagService {
 
     // Tag GetAll
     rpc GetAllTags (GetAllTagsRequest) returns (GetAllTagsResponse);
+<<<<<<< HEAD
     rpc GetFamousTags (GetFamousTagsReq) returns (GetFamousTagsRes);
+=======
+>>>>>>> 9ae723d5f26a638be0bb2c556bd61ccaf6ef2ae6
 }
